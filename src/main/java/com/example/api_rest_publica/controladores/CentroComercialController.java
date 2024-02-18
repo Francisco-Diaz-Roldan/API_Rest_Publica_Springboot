@@ -2,7 +2,9 @@ package com.example.api_rest_publica.controladores;
 
 import com.example.api_rest_publica.controladores.Servicio.SecurityService;
 import com.example.api_rest_publica.modelos.CentroComercial;
+import com.example.api_rest_publica.modelos.Tienda;
 import com.example.api_rest_publica.repositorios.CentroComercialRepository;
+import com.example.api_rest_publica.repositorios.TiendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,9 @@ public class CentroComercialController {
     private CentroComercialRepository centroComercialRepository;
 
     @Autowired
+    private TiendaRepository tiendaRepository;
+
+    @Autowired
     private SecurityService securityService;
 
 
@@ -26,7 +31,7 @@ public class CentroComercialController {
         return centroComercialRepository.findAll();
     }
 
-    @GetMapping("/centrocomercial/id/{id}")
+    @GetMapping("/centrocomercial/{id}")//Para todas las tiendas de un centro comercial
     public CentroComercial getCentroComercialByCentroid(@PathVariable Integer id) {
         return centroComercialRepository.getCentroComercialByCentroid(id);
     }
@@ -35,6 +40,19 @@ public class CentroComercialController {
     public  CentroComercial getCentroComercialByNombre(@PathVariable String nombre){
         return  centroComercialRepository.getCentroComercialByNombre(nombre);
     }
+
+    //TODO hacer las consultas de tienda dentro de la clase Centro Comercial
+
+    @GetMapping("/centrocomercial/{id}/tiendas")//Para todas las tiendas de un centro comercial
+    public List<Tienda> getTiendasByCentroid(@PathVariable Integer id) {
+        return tiendaRepository.getTiendasByCentroid(id);
+    }
+
+    @GetMapping("/centrocomercial/{id}/tiendas/{id}")//Para todas las tiendas de un centro comercial
+    public List<Tienda> getTiendasByCentroid(@PathVariable Integer id) {
+        return tiendaRepository.getTiendasByCentroid(id);
+    }
+
 
 
     @GetMapping("/centrocomercial/direccion/{direccion}")
@@ -63,16 +81,18 @@ public class CentroComercialController {
         return centroComercialRepository.getCentroComercialByParking(parking);
     }
 
-    @PostMapping("/centrocomercial/post")
+    @PostMapping("/centrocomercial")
     public ResponseEntity<CentroComercial> nuevo(@RequestBody CentroComercial centrocomercial, @RequestParam String token) {
         if (securityService.tokenDeValidacion(token)) {
-            return new ResponseEntity<CentroComercial>(centroComercialRepository.save(centrocomercial), HttpStatus.OK);
+            return new ResponseEntity<>(centroComercialRepository.save(centrocomercial), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 
-    @PutMapping("/centrocomercial/put/{id}")
+    // Todo hacer que e devuelva los centros comerciales inaugurados a partir de 2007
+
+    @PutMapping("/centrocomercial/{id}")
     public ResponseEntity<CentroComercial> put(@PathVariable Integer id, @RequestBody CentroComercial
             nuevocentrocomercial, @RequestParam String token){
         if (!securityService.tokenDeValidacion(token)) {
@@ -90,6 +110,7 @@ public class CentroComercialController {
                 centrocomercial.setHorario(nuevocentrocomercial.getHorario());
                 centrocomercial.setPlantas(nuevocentrocomercial.getPlantas());
                 centrocomercial.setParking(nuevocentrocomercial.getParking());
+                centrocomercial.setInauguracion(nuevocentrocomercial.getInauguracion());
             }
             return new ResponseEntity<>(centroComercialRepository.save(centrocomercial), HttpStatus.OK);
         }

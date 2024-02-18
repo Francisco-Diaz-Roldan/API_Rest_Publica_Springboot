@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Data
@@ -19,7 +21,8 @@ public class CentroComercial implements Serializable {
     private String horario;
     private Integer plantas;
     private Boolean parking;
+    private String inauguracion;
 
-    /*@OneToMany(mappedBy = "centroid", fetch = FetchType.EAGER)
-    private List<Tienda> tiendas = new ArrayList<>();*/
+    @OneToMany(mappedBy = "centroid", fetch = FetchType.EAGER)
+    private List<Tienda> tiendas = new ArrayList<>();
 }
