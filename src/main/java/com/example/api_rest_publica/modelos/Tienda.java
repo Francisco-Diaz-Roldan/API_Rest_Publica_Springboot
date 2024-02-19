@@ -2,7 +2,6 @@ package com.example.api_rest_publica.modelos;
 
 
 import com.example.api_rest_publica.enumerados.Precio;
-import com.example.api_rest_publica.enumerados.Tamano;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -28,8 +27,7 @@ public class Tienda implements Serializable {//Los atributos deben estar en el m
     private String centronombre;
 
     private String planta;
-    @Enumerated(EnumType.STRING)
-    private Tamano tamano;
+    private String tamano;
     @Enumerated(EnumType.STRING)
     private Precio precio;
 

@@ -41,7 +41,7 @@ public class CentroComercialController {
         return  centroComercialRepository.getCentroComercialByNombre(nombre);
     }
 
-    //TODO hacer las consultas de tienda dentro de la clase Centro Comercial
+    //TODO hacer los getter, post y delete de tienda
 
     @GetMapping("/centrocomercial/{id}/tiendas")//Para todas las tiendas de un centro comercial
     public List<Tienda> getTiendasByCentroid(@PathVariable Integer id) {
@@ -58,8 +58,12 @@ public class CentroComercialController {
         return tiendaRepository.getTiendaByCentroIdAndNombre(id, nombre);
     }
 
+    @GetMapping("/centrocomercial/{id}/tiendas/planta/{planta}")
+    public Tienda getTiendaByPlanta(@PathVariable Integer id, @PathVariable String planta) {
+        return tiendaRepository.getTiendaByCentroIdAndPlanta(id, planta);
+    }
 
-        @GetMapping("/centrocomercial/direccion/{direccion}")
+    @GetMapping("/centrocomercial/direccion/{direccion}")
     public CentroComercial getCentroComercialByDireccion(@PathVariable String direccion) {
         return centroComercialRepository.getCentroComercialByDireccion(direccion);
     }

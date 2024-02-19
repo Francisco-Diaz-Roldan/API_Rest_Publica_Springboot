@@ -17,7 +17,10 @@ public interface TiendaRepository extends JpaRepository<Tienda, Integer> {
 
     @Query("SELECT t FROM Tienda t WHERE t.centroid.centroid = :centroId AND t.nombre = :nombre")
     Tienda getTiendaByCentroIdAndNombre(@Param("centroId") Integer centroId, @Param("nombre") String nombre);
- /*List<Tienda> getTiendasByCentrocomercial_Centroid(Integer centroid);
+
+    @Query("SELECT t FROM Tienda t WHERE t.centroid.centroid = :centroId AND t.planta = :planta")
+    Tienda getTiendaByCentroIdAndPlanta(@Param("centroId") Integer centroId, @Param("planta") String planta);
+    /*
     Tienda getTiendaByPlanta(String planta);
     Tienda getTiendaByTamano(Tamano tamano);
     Tienda getTiendaByPrecio(Precio precio);*/
