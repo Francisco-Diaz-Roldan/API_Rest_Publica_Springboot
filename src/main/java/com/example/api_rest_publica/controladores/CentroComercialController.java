@@ -48,9 +48,9 @@ public class CentroComercialController {
         return tiendaRepository.getTiendasByCentroid(id);
     }
 
-    @GetMapping("/centrocomercial/{id}/tiendas/{id}")//Para todas las tiendas de un centro comercial
-    public List<Tienda> getTiendasByCentroid(@PathVariable Integer id) {
-        return tiendaRepository.getTiendasByCentroid(id);
+    @GetMapping("/centrocomercial/{id}/tiendas/{tiendaid}")
+    public Tienda getTiendaByTiendaid(@PathVariable Integer id, @PathVariable Integer tiendaid) {
+        return tiendaRepository.getTiendaByCentroIdAndTiendaid(id, tiendaid);
     }
 
 
