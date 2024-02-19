@@ -5,4 +5,6 @@ public class TiendaServicio {
     //TODO hacer otro servicio para implementar todo lo que hacen los controladores
     //en caso de nulos o que no tenga lo que sea o esté mal escrito. CONTROL DE ERRORES
 
+    //TODO pasarle la logica delcentro comercial controller del post
+
 }
