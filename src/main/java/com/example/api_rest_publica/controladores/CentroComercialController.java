@@ -63,6 +63,15 @@ public class CentroComercialController {
         return tiendaRepository.getTiendaByCentroIdAndPlanta(id, planta);
     }
 
+    @GetMapping("/centrocomercial/{id}/tiendas/tamano/{tamano}")
+    public List<Tienda> getTiendasByTamano(@PathVariable Integer id, @PathVariable String tamano) {
+        return tiendaRepository.getTiendasByCentroIdAndTamano(id, tamano);
+    }
+
+
+
+
+
     @GetMapping("/centrocomercial/direccion/{direccion}")
     public CentroComercial getCentroComercialByDireccion(@PathVariable String direccion) {
         return centroComercialRepository.getCentroComercialByDireccion(direccion);
