@@ -27,6 +27,7 @@ public class CentroComercialController {
     private SecurityService securityService;
 
 
+    //Get de Centro Comercial
     @GetMapping("/")
     public List<CentroComercial> getAllCentrosComerciales() {
         return centroComercialRepository.findAll();
@@ -42,7 +43,34 @@ public class CentroComercialController {
         return  centroComercialRepository.getCentroComercialByNombre(nombre);
     }
 
-    //TODO hacer los post y delete de tienda
+    @GetMapping("/centrocomercial/direccion/{direccion}")
+    public CentroComercial getCentroComercialByDireccion(@PathVariable String direccion) {
+        return centroComercialRepository.getCentroComercialByDireccion(direccion);
+    }
+
+    @GetMapping("/centrocomercial/telefono/{telefono}")
+    public CentroComercial getCentroComercialByTelefono(@PathVariable String telefono) {
+        return centroComercialRepository.getCentroComercialByTelefono(telefono);
+    }
+
+    //Devuelvo una lista por si hay más de un centro comercial con ese horario, para que no de un error 500
+    @GetMapping("/centrocomercial/horario/{horario}")
+    public List<CentroComercial> getCentroComercialByHorario(@PathVariable String horario) {
+        return centroComercialRepository.getCentroComercialByHorario(horario);
+    }
+
+    @GetMapping("/centrocomercial/plantas/{plantas}")
+    public List<CentroComercial> getCentroComercialByPlantas(@PathVariable Integer plantas) {
+        return centroComercialRepository.getCentroComercialByPlantas(plantas);
+    }
+
+    @GetMapping("/centrocomercial/parking/{parking}")
+    public List<CentroComercial> getCentroComercialByParking(@PathVariable Boolean parking) {
+        return centroComercialRepository.getCentroComercialByParking(parking);
+    }
+
+
+    //Get de Tienda
 
     @GetMapping("/centrocomercial/{id}/tiendas")//Para todas las tiendas de un centro comercial
     public List<Tienda> getTiendasByCentroid(@PathVariable Integer id) {
@@ -89,32 +117,8 @@ public class CentroComercialController {
         return tiendaRepository.getTiendasByPrecio(precio);
     }
 
-    @GetMapping("/centrocomercial/direccion/{direccion}")
-    public CentroComercial getCentroComercialByDireccion(@PathVariable String direccion) {
-        return centroComercialRepository.getCentroComercialByDireccion(direccion);
-    }
 
-    @GetMapping("/centrocomercial/telefono/{telefono}")
-    public CentroComercial getCentroComercialByTelefono(@PathVariable String telefono) {
-        return centroComercialRepository.getCentroComercialByTelefono(telefono);
-    }
-
-    //Devuelvo una lista por si hay más de un centro comercial con ese horario, para que no de un error 500
-    @GetMapping("/centrocomercial/horario/{horario}")
-    public List<CentroComercial> getCentroComercialByHorario(@PathVariable String horario) {
-        return centroComercialRepository.getCentroComercialByHorario(horario);
-    }
-
-    @GetMapping("/centrocomercial/plantas/{plantas}")
-    public List<CentroComercial> getCentroComercialByPlantas(@PathVariable Integer plantas) {
-        return centroComercialRepository.getCentroComercialByPlantas(plantas);
-    }
-
-    @GetMapping("/centrocomercial/parking/{parking}")
-    public List<CentroComercial> getCentroComercialByParking(@PathVariable Boolean parking) {
-        return centroComercialRepository.getCentroComercialByParking(parking);
-    }
-
+    //Post de Centro Comercial
     @PostMapping("/centrocomercial")
     public ResponseEntity<CentroComercial> nuevo(@RequestBody CentroComercial centrocomercial, @RequestParam String token) {
         if (securityService.tokenDeValidacion(token)) {
@@ -124,20 +128,8 @@ public class CentroComercialController {
         }
     }
 
-    //Añadirle el id del centro comercial para que me po
-    /*
-    @PostMapping("/tiendas")
-    public ResponseEntity<Tienda> crearTienda(@RequestBody Tienda nuevaTienda, @RequestParam String token) {
-        if (securityService.tokenDeValidacion(token)) {
-            Tienda tiendaCreada = tiendaRepository.save(nuevaTienda);
-            return new ResponseEntity<>(tiendaCreada, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-    }*/
 
-
-
+    //Put de Centro Comercial
     @PutMapping("/centrocomercial/{id}")
     public ResponseEntity<CentroComercial> put(@PathVariable Integer id, @RequestBody CentroComercial
             nuevocentrocomercial, @RequestParam String token){
@@ -162,8 +154,12 @@ public class CentroComercialController {
         }
     }
 
+
+    //Post de Tienda
     @PostMapping("/centrocomercial/{id}")
-    public ResponseEntity<Tienda> addTienda(@PathVariable Integer id, @RequestBody Tienda tienda, @RequestParam String token) {
+    public ResponseEntity<Tienda> addTienda(@PathVariable Integer id,
+                                            @RequestBody Tienda tienda,
+                                            @RequestParam String token) {
         if (!securityService.tokenDeValidacion(token)) {return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);}
         Optional<CentroComercial> centroComercialOptional = centroComercialRepository.findById(id);
         if (centroComercialOptional.isEmpty()) {
@@ -176,46 +172,7 @@ public class CentroComercialController {
     }
 
 
-    /*@PostMapping("/centrocomercial/{id}")
-    public ResponseEntity<Tienda> addTienda(@RequestBody Tienda tienda){
-        if (!securityService.tokenDeValidacion(token)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } else {
-            var result = TiendaServicio.createTiendainCentro(centro, tienda);
-            if (result == null) {
-                var salida = new HashMap<>();
-                salida.put("status","error");
-                salida.put("description","Hubo un error al cargar el centro");
-                return new ResponseEntity<>(salida,HttpStatus.NOT_FOUND);
-            } else {
-                return new ResponseEntity<Tienda>(result);
-            }
-        }
-        //TODO Comprobar que el id del centro comercial existe
-        // Si no existe no puedo crear nada pero si existe creo una tienda nueva y antes de guardarla se la asigno al id
-    }*/
-/*
-    @PostMapping("/centrocomercial/{id}")
-    public ResponseEntity<Tienda> addTienda(@RequestBody Tienda tienda){
-        if (!securityService.tokenDeValidacion(token)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } else {
-            var result = TiendaServicio.createTiendainCentro(centro, tienda);
-            if (result == null) {
-                var salida = new HashMap<>();
-                salida.put("status","error");
-                salida.put("description","Hubo un error al cargar el centro");
-                return new ResponseEntity<>(salida,HttpStatus.NOT_FOUND);
-            } else {
-                return new ResponseEntity<Tienda>(result);
-            }
-        }
-        //TODO Comprobar que el id del centro comercial existe
-        // Si no existe no puedo crear nada pero si existe creo una tienda nueva y antes de guardarla se la asigno al id
-    }
-*/
-//TODO buscar centros comerciales cuyo año de inauguración sea a partir de 2007
-//TODO seleccionar total tiendas de centro comercial
+    //Put de Tienda
     @PutMapping("/centrocomercial/{id}/tiendas/{tiendaid}")
     public ResponseEntity<Tienda> updateTienda(
             @PathVariable Integer id,
@@ -231,8 +188,6 @@ public class CentroComercialController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        CentroComercial centro = centroComercialOptional.get();
-
         Optional<Tienda> tiendaOptional = tiendaRepository.findById(tiendaid);
         if (tiendaOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -241,10 +196,16 @@ public class CentroComercialController {
         Tienda tiendaExistente = tiendaOptional.get();
         tiendaExistente.setNombre(nuevaTienda.getNombre());
         tiendaExistente.setTipo(nuevaTienda.getTipo());
+        tiendaExistente.setCentroid(nuevaTienda.getCentroid());
+        tiendaExistente.setPlanta(nuevaTienda.getPlanta());
+        tiendaExistente.setTamano(nuevaTienda.getTamano());
+        tiendaExistente.setPrecio(nuevaTienda.getPrecio());
 
         Tienda tiendaActualizada = tiendaRepository.save(tiendaExistente);
         return new ResponseEntity<>(tiendaActualizada, HttpStatus.OK);
     }
+
+
 
     @DeleteMapping("/centrocomercial/delete/{id}")
     public ResponseEntity<CentroComercial> delete(@PathVariable Integer id,  @RequestParam String token){

@@ -7,6 +7,6 @@ import org.springframework.stereotype.Service;
 public class SecurityService {
 
     public Boolean tokenDeValidacion(String token) {
-        return (token.equals("hasSidoT0k3nizado"));
+        return (token.equals("t0k3n"));
     }
 }
