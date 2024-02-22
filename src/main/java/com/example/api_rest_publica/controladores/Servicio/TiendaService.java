@@ -117,4 +117,13 @@ public class TiendaService {
         tiendaRepository.deleteById(tiendaid);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    /**
+     * Elimina todas las tiendas asociadas a un centro comercial.
+     *
+     * @param centroid ID del centro comercial del cual se eliminarán las tiendas.
+     */
+    public void eliminarTiendasDeCentroComercial(Integer centroid) {
+        tiendaRepository.deleteByCentroidCentroid(centroid);
+    }
 }

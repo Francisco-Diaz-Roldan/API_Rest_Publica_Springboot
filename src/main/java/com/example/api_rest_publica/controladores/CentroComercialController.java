@@ -1,12 +1,14 @@
 package com.example.api_rest_publica.controladores;
 
 import com.example.api_rest_publica.controladores.Servicio.CentroComercialService;
+import com.example.api_rest_publica.controladores.Servicio.SecurityService;
 import com.example.api_rest_publica.controladores.Servicio.TiendaService;
 import com.example.api_rest_publica.modelos.CentroComercial;
 import com.example.api_rest_publica.modelos.Tienda;
 import com.example.api_rest_publica.repositorios.CentroComercialRepository;
 import com.example.api_rest_publica.repositorios.TiendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,10 +29,13 @@ public class CentroComercialController {
     private TiendaRepository tiendaRepository;
 
     @Autowired
-    private TiendaService tiendaServicio;
+    private TiendaService tiendaService;
 
     @Autowired
     private CentroComercialService centroComercialService;
+
+    @Autowired
+    private SecurityService securityService;
 
     /**
      * Obtiene todos los centros comerciales.
@@ -330,7 +335,7 @@ public class CentroComercialController {
     @PostMapping("/centrocomercial/{id}")
     public ResponseEntity<Tienda> addTienda(@PathVariable Integer id, @RequestBody Tienda tienda,
                                             @RequestParam String token) {
-        return tiendaServicio.crearTienda(id, tienda, token);
+        return tiendaService.crearTienda(id, tienda, token);
     }
 
     /**
@@ -346,7 +351,7 @@ public class CentroComercialController {
     @PutMapping("/centrocomercial/{id}/tiendas/{tiendaid}")
     public ResponseEntity<Tienda> updateTienda(@PathVariable Integer id, @PathVariable Integer tiendaid,
                                                @RequestBody Tienda nuevaTienda, @RequestParam String token) {
-        return tiendaServicio.actualizarTienda(id, tiendaid, nuevaTienda, token);
+        return tiendaService.actualizarTienda(id, tiendaid, nuevaTienda, token);
     }
 
     /**
@@ -358,9 +363,28 @@ public class CentroComercialController {
      * @return ResponseEntity con el estado de la operación.
      */
     //Delete de Tienda
-    @DeleteMapping("/{id}/tiendas/{tiendaid}")
+    @DeleteMapping("/{id}/tienda/{tiendaid}")
     public ResponseEntity<Void> deleteTienda(@PathVariable Integer id, @PathVariable Integer tiendaid,
                                              @RequestParam String token) {
-        return tiendaServicio.eliminarTienda(id, tiendaid, token);
+        return tiendaService.eliminarTienda(id, tiendaid, token);
+    }
+
+    /**
+     * Elimina todas las tiendas asociadas a un centro comercial.
+     *
+     * @param centroid ID del centro comercial del cual se eliminarán las tiendas.
+     * @param token             Token de autenticación.
+     * @return ResponseEntity con el resultado de la operación.
+     */
+    @DeleteMapping("/eliminarTodasLasTiendasDelCentroComercial/{centroid}")
+    public ResponseEntity<Void> eliminarTiendasPorCentroComercial(
+            @PathVariable Integer centroid,
+            @RequestParam String token) {
+        if (!securityService.tokenDeValidacion(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        tiendaService.eliminarTiendasDeCentroComercial(centroid);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

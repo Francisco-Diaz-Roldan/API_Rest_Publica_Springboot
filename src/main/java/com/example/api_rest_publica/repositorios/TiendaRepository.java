@@ -1,7 +1,9 @@
 package com.example.api_rest_publica.repositorios;
 
 import com.example.api_rest_publica.modelos.Tienda;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -98,4 +100,14 @@ public interface TiendaRepository extends JpaRepository<Tienda, Integer> {
      */
     @Query("SELECT t FROM Tienda t WHERE t.precio = :precio")
     List<Tienda> getTiendasByPrecio(@Param("precio") String precio);
+
+    /**
+     * Elimina todas las tiendas asociadas a un centro comercial.
+     *
+     * @param centroComercialId ID del centro comercial del cual se eliminarán las tiendas.
+     */
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Tienda t WHERE t.centroid.centroid = :centroComercialId")
+    void deleteByCentroidCentroid(Integer centroComercialId);
 }

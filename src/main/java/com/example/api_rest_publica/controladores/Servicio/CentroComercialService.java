@@ -24,6 +24,9 @@ public class CentroComercialService {
     @Autowired
     private CentroComercialRepository centroComercialRepository;
 
+    @Autowired
+    private TiendaService tiendaService;
+
     /**
      * Busca centros comerciales inaugurados antes del año indicado.
      *
@@ -123,6 +126,8 @@ public class CentroComercialService {
 
             if (centroComercialRepository.existsById(id)) {
                 salida = centroComercialRepository.findById(id).get();
+
+                tiendaService.eliminarTiendasDeCentroComercial(id);//Esta linea es para borrar todas sus tiendas por id
                 centroComercialRepository.deleteById(id);
                 respuesta = new ResponseEntity<>(salida, HttpStatus.OK);
             } else {
