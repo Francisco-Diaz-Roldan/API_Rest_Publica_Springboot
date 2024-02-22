@@ -20,10 +20,20 @@ public class CentroComercialService {
     @Autowired
     private CentroComercialRepository centroComercialRepository;
 
-    public List<CentroComercial> buscarCentrosComercialesInauguradosAntesDeAnio(Year year) {
+    public List<CentroComercial> buscarCentrosComercialesInauguradosAntesDelAno(Year year) {
         // Construyo un string con el formato esperado
         String fechaLimite = "01/01/" + year.toString();
         return centroComercialRepository.findByInauguracionBefore(fechaLimite);
+    }
+
+    public List<CentroComercial> buscarCentrosComercialesInauguradosDespuesDelAno(Year year) {
+        // Construyo un string con el formato esperado
+        String fechaLimite = "01/01/" + year.toString();
+        return centroComercialRepository.findByInauguracionAfter(fechaLimite);
+    }
+
+    public List<CentroComercial> buscarCentrosComercialesConMenosDePlantasQue(Integer numeroPlantas) {
+        return centroComercialRepository.findCentrosComercialesConMenosDePlantas(numeroPlantas);
     }
 
     //Para crear un nuevo Centro Comercial (Post)

@@ -88,6 +88,4 @@ public class TiendaService {
         tiendaRepository.deleteById(tiendaid);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-
 }

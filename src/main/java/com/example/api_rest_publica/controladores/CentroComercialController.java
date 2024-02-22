@@ -66,21 +66,38 @@ public class CentroComercialController {
         return centroComercialRepository.getCentroComercialByPlantas(plantas);
     }
 
-    @GetMapping("/centrocomercial/parking/{parking}")
+    @GetMapping("/centroscomerciales/parking/{parking}")
     public List<CentroComercial> getCentroComercialByParking(@PathVariable Boolean parking) {
         return centroComercialRepository.getCentroComercialByParking(parking);
     }
 
-    @GetMapping("/inauguradosAntesDeAnio/{ano}")
-    public List<CentroComercial> centrosComercialesInauguradosAntesDeAnio(@PathVariable String ano) {
+    @GetMapping("/centroscomerciales/inauguradosAntesDelAno/{ano}")
+    public List<CentroComercial> centrosComercialesInauguradosAntesDelAno(@PathVariable String ano) {
         try {
             int year = Integer.parseInt(ano);
             Year yearObject = Year.of(year);
-            return centroComercialService.buscarCentrosComercialesInauguradosAntesDeAnio(yearObject);
+            return centroComercialService.buscarCentrosComercialesInauguradosAntesDelAno(yearObject);
         } catch (NumberFormatException e) {
             // Manejo el caso en que 'ano' no sea un número válido
-            return (List<CentroComercial>) ResponseEntity.badRequest().body("El año proporcionado no es válido");
+            return (List<CentroComercial>) ResponseEntity.badRequest().body("El año introducido no es válido");
         }
+    }
+
+    @GetMapping("/centroscomerciales/inauguradosDespuesDelAno/{ano}")
+    public List<CentroComercial> centrosComercialesInauguradosDespuesDelAno(@PathVariable String ano) {
+        try {
+            int year = Integer.parseInt(ano);
+            Year yearObject = Year.of(year);
+            return centroComercialService.buscarCentrosComercialesInauguradosDespuesDelAno(yearObject);
+        } catch (NumberFormatException e) {
+            // Manejo el caso en que 'ano' no sea un número válido
+            return (List<CentroComercial>) ResponseEntity.badRequest().body("El año introducido no es válido");
+        }
+    }
+
+    @GetMapping("/menosDe/{numeroPlantas}/plantas")
+    public List<CentroComercial> getCentrosComercialesConMenosDePlantas(@PathVariable Integer numeroPlantas) {
+        return centroComercialService.buscarCentrosComercialesConMenosDePlantasQue(numeroPlantas);
     }
 
     //Post de Centro Comercial
@@ -102,7 +119,7 @@ public class CentroComercialController {
     }
 
 
-    //Get de Tienda
+    //Gets de Tienda
     @GetMapping("/centrocomercial/{id}/tiendas")//Para todas las tiendas de un centro comercial
     public List<Tienda> getTiendasByCentroid(@PathVariable Integer id) {
         return tiendaRepository.getTiendasByCentroid(id);
@@ -119,7 +136,7 @@ public class CentroComercialController {
     }
 
     @GetMapping("/centrocomercial/{id}/tiendas/planta/{planta}")
-    public Tienda getTiendaByPlanta(@PathVariable Integer id, @PathVariable String planta) {
+    public Tienda getTiendaByPlanta(@PathVariable Integer id, @PathVariable Integer planta) {
         return tiendaRepository.getTiendaByCentroIdAndPlanta(id, planta);
     }
 
