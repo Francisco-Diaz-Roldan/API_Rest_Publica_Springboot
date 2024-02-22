@@ -15,4 +15,8 @@ CentroComercial getCentroComercialByTelefono(String telefono);
 List<CentroComercial> getCentroComercialByHorario(String horario);
 List<CentroComercial> getCentroComercialByPlantas(Integer plantas);
 List<CentroComercial> getCentroComercialByParking(Boolean parking);
+
+
+
+    List<CentroComercial> findByInauguracionBefore(String fecha);
 }

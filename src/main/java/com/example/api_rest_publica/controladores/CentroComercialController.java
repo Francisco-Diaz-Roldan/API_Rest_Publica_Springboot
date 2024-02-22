@@ -1,17 +1,17 @@
 package com.example.api_rest_publica.controladores;
 
-import com.example.api_rest_publica.controladores.Servicio.SecurityService;
+import com.example.api_rest_publica.controladores.Servicio.CentroComercialService;
+import com.example.api_rest_publica.controladores.Servicio.TiendaService;
 import com.example.api_rest_publica.modelos.CentroComercial;
 import com.example.api_rest_publica.modelos.Tienda;
 import com.example.api_rest_publica.repositorios.CentroComercialRepository;
 import com.example.api_rest_publica.repositorios.TiendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Year;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/centrocomercial")//centroscomerciales hace referencia a la tabla
@@ -24,8 +24,10 @@ public class CentroComercialController {
     private TiendaRepository tiendaRepository;
 
     @Autowired
-    private SecurityService securityService;
+    private TiendaService tiendaServicio;
 
+    @Autowired
+    private CentroComercialService centroComercialService;
 
     //Get de Centro Comercial
     @GetMapping("/")
@@ -39,8 +41,8 @@ public class CentroComercialController {
     }
 
     @GetMapping("/centrocomercial/nombre/{nombre}")
-    public  CentroComercial getCentroComercialByNombre(@PathVariable String nombre){
-        return  centroComercialRepository.getCentroComercialByNombre(nombre);
+    public CentroComercial getCentroComercialByNombre(@PathVariable String nombre) {
+        return centroComercialRepository.getCentroComercialByNombre(nombre);
     }
 
     @GetMapping("/centrocomercial/direccion/{direccion}")
@@ -69,9 +71,38 @@ public class CentroComercialController {
         return centroComercialRepository.getCentroComercialByParking(parking);
     }
 
+    @GetMapping("/inauguradosAntesDeAnio/{ano}")
+    public List<CentroComercial> centrosComercialesInauguradosAntesDeAnio(@PathVariable String ano) {
+        try {
+            int year = Integer.parseInt(ano);
+            Year yearObject = Year.of(year);
+            return centroComercialService.buscarCentrosComercialesInauguradosAntesDeAnio(yearObject);
+        } catch (NumberFormatException e) {
+            // Manejo el caso en que 'ano' no sea un número válido
+            return (List<CentroComercial>) ResponseEntity.badRequest().body("El año proporcionado no es válido");
+        }
+    }
+
+    //Post de Centro Comercial
+    @PostMapping
+    public ResponseEntity<CentroComercial> nuevo(@RequestBody CentroComercial centroComercial, @RequestParam String token) {
+        return centroComercialService.crearCentroComercial(centroComercial, token);
+    }
+
+    //Put de Centro Comercial
+    @PutMapping("/{id}")
+    public ResponseEntity<CentroComercial> put(@PathVariable Integer id, @RequestBody CentroComercial nuevoCentroComercial, @RequestParam String token) {
+        return centroComercialService.actualizarCentroComercial(id, nuevoCentroComercial, token);
+    }
+
+    //Delete de Centro Comercial
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<CentroComercial> delete(@PathVariable Integer id, @RequestParam String token) {
+        return centroComercialService.eliminarCentroComercial(id, token);
+    }
+
 
     //Get de Tienda
-
     @GetMapping("/centrocomercial/{id}/tiendas")//Para todas las tiendas de un centro comercial
     public List<Tienda> getTiendasByCentroid(@PathVariable Integer id) {
         return tiendaRepository.getTiendasByCentroid(id);
@@ -83,7 +114,7 @@ public class CentroComercialController {
     }
 
     @GetMapping("/centrocomercial/{id}/tiendas/nombre/{nombre}")
-    public Tienda getTiendaByNombre(@PathVariable Integer id, @PathVariable String nombre){
+    public Tienda getTiendaByNombre(@PathVariable Integer id, @PathVariable String nombre) {
         return tiendaRepository.getTiendaByCentroIdAndNombre(id, nombre);
     }
 
@@ -117,128 +148,21 @@ public class CentroComercialController {
         return tiendaRepository.getTiendasByPrecio(precio);
     }
 
-
-    //Post de Centro Comercial
-    @PostMapping("/centrocomercial")
-    public ResponseEntity<CentroComercial> nuevo(@RequestBody CentroComercial centrocomercial, @RequestParam String token) {
-        if (securityService.tokenDeValidacion(token)) {
-            return new ResponseEntity<>(centroComercialRepository.save(centrocomercial), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-    }
-
-
-    //Put de Centro Comercial
-    @PutMapping("/centrocomercial/{id}")
-    public ResponseEntity<CentroComercial> put(@PathVariable Integer id, @RequestBody CentroComercial
-            nuevocentrocomercial, @RequestParam String token){
-        if (!securityService.tokenDeValidacion(token)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } else {
-            CentroComercial centrocomercial;
-            var centrocomercialOpcional = centroComercialRepository.findById(id);
-            if (centrocomercialOpcional.isEmpty()) {
-                centrocomercial = nuevocentrocomercial;
-            } else {
-                centrocomercial = centrocomercialOpcional.get();
-                centrocomercial.setNombre(nuevocentrocomercial.getNombre());
-                centrocomercial.setDireccion(nuevocentrocomercial.getDireccion());
-                centrocomercial.setTelefono(nuevocentrocomercial.getTelefono());
-                centrocomercial.setHorario(nuevocentrocomercial.getHorario());
-                centrocomercial.setPlantas(nuevocentrocomercial.getPlantas());
-                centrocomercial.setParking(nuevocentrocomercial.getParking());
-                centrocomercial.setInauguracion(nuevocentrocomercial.getInauguracion());
-            }
-            return new ResponseEntity<>(centroComercialRepository.save(centrocomercial), HttpStatus.OK);
-        }
-    }
-
-
     //Post de Tienda
     @PostMapping("/centrocomercial/{id}")
-    public ResponseEntity<Tienda> addTienda(@PathVariable Integer id,
-                                            @RequestBody Tienda tienda,
-                                            @RequestParam String token) {
-        if (!securityService.tokenDeValidacion(token)) {return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);}
-        Optional<CentroComercial> centroComercialOptional = centroComercialRepository.findById(id);
-        if (centroComercialOptional.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        CentroComercial centro = (CentroComercial) ((Optional<?>) centroComercialOptional).get();
-        tienda.setCentroid(centro);
-        Tienda nuevaTienda = tiendaRepository.save(tienda);
-        return new ResponseEntity<>(nuevaTienda, HttpStatus.CREATED);
+    public ResponseEntity<Tienda> addTienda(@PathVariable Integer id, @RequestBody Tienda tienda, @RequestParam String token) {
+        return tiendaServicio.crearTienda(id, tienda, token);
     }
-
 
     //Put de Tienda
     @PutMapping("/centrocomercial/{id}/tiendas/{tiendaid}")
-    public ResponseEntity<Tienda> updateTienda(
-            @PathVariable Integer id,
-            @PathVariable Integer tiendaid,
-            @RequestBody Tienda nuevaTienda,
-            @RequestParam String token) {
-        if (!securityService.tokenDeValidacion(token)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
-        Optional<CentroComercial> centroComercialOptional = centroComercialRepository.findById(id);
-        if (centroComercialOptional.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        Optional<Tienda> tiendaOptional = tiendaRepository.findById(tiendaid);
-        if (tiendaOptional.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        Tienda tiendaExistente = tiendaOptional.get();
-        tiendaExistente.setNombre(nuevaTienda.getNombre());
-        tiendaExistente.setTipo(nuevaTienda.getTipo());
-        tiendaExistente.setCentroid(nuevaTienda.getCentroid());
-        tiendaExistente.setPlanta(nuevaTienda.getPlanta());
-        tiendaExistente.setTamano(nuevaTienda.getTamano());
-        tiendaExistente.setPrecio(nuevaTienda.getPrecio());
-
-        Tienda tiendaActualizada = tiendaRepository.save(tiendaExistente);
-        return new ResponseEntity<>(tiendaActualizada, HttpStatus.OK);
+    public ResponseEntity<Tienda> updateTienda(@PathVariable Integer id, @PathVariable Integer tiendaid, @RequestBody Tienda nuevaTienda, @RequestParam String token) {
+        return tiendaServicio.actualizarTienda(id, tiendaid, nuevaTienda, token);
     }
 
-
-
-    @DeleteMapping("/centrocomercial/delete/{id}")
-    public ResponseEntity<CentroComercial> delete(@PathVariable Integer id,  @RequestParam String token){
-        ResponseEntity<CentroComercial> respuesta = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        if( securityService.tokenDeValidacion(token) ){
-            CentroComercial salida = new CentroComercial();
-            if (centroComercialRepository.existsById(id)) {
-                salida = centroComercialRepository.findById(id).get();
-                centroComercialRepository.deleteById(id);
-                respuesta = new ResponseEntity<>(salida, HttpStatus.OK);
-            } else {
-                respuesta = new ResponseEntity<>(salida, HttpStatus.NOT_FOUND);
-            }
-        }
-        return respuesta;
-    }
-
-    @DeleteMapping("/centrocomercial/{id}/tiendas/{tiendaid}")
-    public ResponseEntity<Void> deleteTienda(
-            @PathVariable Integer id,
-            @PathVariable Integer tiendaid,
-            @RequestParam String token
-    ) {
-        if (!securityService.tokenDeValidacion(token)) {return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);}
-
-        Optional<CentroComercial> centroComercialOptional = centroComercialRepository.findById(id);
-        if (centroComercialOptional.isEmpty()) {return new ResponseEntity<>(HttpStatus.NOT_FOUND);}
-
-        Optional<Tienda> tiendaOptional = tiendaRepository.findById(tiendaid);
-        if (tiendaOptional.isEmpty()) {return new ResponseEntity<>(HttpStatus.NOT_FOUND);}
-
-        tiendaRepository.deleteById(tiendaid);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    //Delete de Tienda
+    @DeleteMapping("/{id}/tiendas/{tiendaid}")
+    public ResponseEntity<Void> deleteTienda(@PathVariable Integer id, @PathVariable Integer tiendaid, @RequestParam String token) {
+        return tiendaServicio.eliminarTienda(id, tiendaid, token);
     }
 }

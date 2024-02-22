@@ -26,7 +26,7 @@ public class Tienda implements Serializable {//Los atributos deben estar en el m
     private CentroComercial centroid;
     @Transient // Para que no persista, indica que no aparece en la base de datos
     private String centronombre;
-    private String planta;
+    private Integer planta;
     @Enumerated(EnumType.STRING)
     private Tamano tamano;
     @Enumerated(EnumType.STRING)
