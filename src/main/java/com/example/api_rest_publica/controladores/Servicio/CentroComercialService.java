@@ -34,7 +34,7 @@ public class CentroComercialService {
      * @return Lista de centros comerciales inaugurados antes del año indicado.
      */
     public List<CentroComercial> buscarCentrosComercialesInauguradosAntesDelAno(Year ano) {
-        // Construyo un string con el formato esperado
+        // Creo un string con el formato de fecha 01/01/ano
         String fecha = "01/01/" + ano.toString();
         return centroComercialRepository.findByInauguracionBefore(fecha);
     }
@@ -46,7 +46,7 @@ public class CentroComercialService {
      * @return Lista de centros comerciales inaugurados después del año indicado.
      */
     public List<CentroComercial> buscarCentrosComercialesInauguradosDespuesDelAno(Year ano) {
-        // Construyo un string con el formato esperado
+        // Creo un string con el formato de fecha 01/01/ano
         String fecha = "01/01/" + ano.toString();
         return centroComercialRepository.findByInauguracionAfter(fecha);
     }

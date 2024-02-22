@@ -133,7 +133,7 @@ public class CentroComercialController {
      * @return Lista de centros comerciales inaugurados antes del año especificado o un ResponseEntity con un mensaje de
      * error si el año no es válido.
      */
-    @GetMapping("/centroscomerciales/inauguradosAntesDelAno/{ano}")
+    @GetMapping("/centroscomerciales/inauguradosAntesDe/{ano}")
     public List<CentroComercial> centrosComercialesInauguradosAntesDelAno(@PathVariable String ano) {
         try {
             int year = Integer.parseInt(ano);
@@ -152,7 +152,7 @@ public class CentroComercialController {
      * @return Lista de centros comerciales inaugurados después del año especificado o un ResponseEntity con un mensaje
      * de error si el año no es válido.
      */
-    @GetMapping("/centroscomerciales/inauguradosDespuesDelAno/{ano}")
+    @GetMapping("/centroscomerciales/inauguradosDespuesDe/{ano}")
     public List<CentroComercial> centrosComercialesInauguradosDespuesDelAno(@PathVariable String ano) {
         try {
             int year = Integer.parseInt(ano);
@@ -225,7 +225,7 @@ public class CentroComercialController {
      * @param id ID del centro comercial.
      * @return Lista de tiendas asociadas al centro comercial con el ID especificado.
      */
-    @GetMapping("/centrocomercial/{id}/tiendas")//Para todas las tiendas de un centro comercial
+    @GetMapping("/centrocomercial/{id}/tienda")//Para todas las tiendas de un centro comercial
     public List<Tienda> getTiendasByCentroid(@PathVariable Integer id) {
         return tiendaRepository.getTiendasByCentroid(id);
     }
@@ -237,7 +237,7 @@ public class CentroComercialController {
      * @param tiendaid ID de la tienda.
      * @return La tienda con el ID especificado en el centro comercial correspondiente o null si no se encuentra.
      */
-    @GetMapping("/centrocomercial/{id}/tiendas/{tiendaid}")
+    @GetMapping("/centrocomercial/{id}/tienda/{tiendaid}")
     public Tienda getTiendaByTiendaid(@PathVariable Integer id, @PathVariable Integer tiendaid) {
         return tiendaRepository.getTiendaByCentroIdAndTiendaid(id, tiendaid);
     }
@@ -249,7 +249,7 @@ public class CentroComercialController {
      * @param nombre Nombre de la tienda.
      * @return La tienda con el nombre especificado en el centro comercial correspondiente o null si no se encuentra.
      */
-    @GetMapping("/centrocomercial/{id}/tiendas/nombre/{nombre}")
+    @GetMapping("/centrocomercial/{id}/tienda/nombre/{nombre}")
     public Tienda getTiendaByNombre(@PathVariable Integer id, @PathVariable String nombre) {
         return tiendaRepository.getTiendaByCentroIdAndNombre(id, nombre);
     }
@@ -261,7 +261,7 @@ public class CentroComercialController {
      * @param planta Número de planta de la tienda.
      * @return La tienda en la planta especificada en el centro comercial correspondiente o null si no se encuentra.
      */
-    @GetMapping("/centrocomercial/{id}/tiendas/planta/{planta}")
+    @GetMapping("/centrocomercial/{id}/tienda/planta/{planta}")
     public Tienda getTiendaByPlanta(@PathVariable Integer id, @PathVariable Integer planta) {
         return tiendaRepository.getTiendaByCentroIdAndPlanta(id, planta);
     }
@@ -273,7 +273,7 @@ public class CentroComercialController {
      * @param tamano Tamaño de las tiendas a buscar.
      * @return Lista de tiendas con el tamaño especificado en el centro comercial correspondiente.
      */
-    @GetMapping("/centrocomercial/{id}/tiendas/tamano/{tamano}")
+    @GetMapping("/centrocomercial/{id}/tienda/tamano/{tamano}")
     public List<Tienda> getTiendasByTamano(@PathVariable Integer id, @PathVariable String tamano) {
         return tiendaRepository.getTiendasByCentroIdAndTamano(id, tamano);
     }
@@ -285,7 +285,7 @@ public class CentroComercialController {
      * @param precio Precio de las tiendas a buscar.
      * @return Lista de tiendas con el precio especificado en el centro comercial correspondiente.
      */
-    @GetMapping("/centrocomercial/{id}/tiendas/precio/{precio}")
+    @GetMapping("/centrocomercial/{id}/tienda/precio/{precio}")
     public List<Tienda> getTiendasByPrecio(@PathVariable Integer id, @PathVariable String precio) {
         return tiendaRepository.getTiendasByCentroIdAndPrecio(id, precio);
     }
@@ -348,7 +348,7 @@ public class CentroComercialController {
      * @return ResponseEntity con la tienda actualizada o estado de error.
      */
     //Put de Tienda
-    @PutMapping("/centrocomercial/{id}/tiendas/{tiendaid}")
+    @PutMapping("/centrocomercial/{id}/tienda/{tiendaid}")
     public ResponseEntity<Tienda> updateTienda(@PathVariable Integer id, @PathVariable Integer tiendaid,
                                                @RequestBody Tienda nuevaTienda, @RequestParam String token) {
         return tiendaService.actualizarTienda(id, tiendaid, nuevaTienda, token);
