@@ -11,6 +11,10 @@ import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 
+
+/**
+ * Clase que proporciona servicios relacionados con los Centros Comerciales.
+ */
 @Service
 public class CentroComercialService {
 
@@ -20,22 +24,47 @@ public class CentroComercialService {
     @Autowired
     private CentroComercialRepository centroComercialRepository;
 
-    public List<CentroComercial> buscarCentrosComercialesInauguradosAntesDelAno(Year year) {
+    /**
+     * Busca centros comerciales inaugurados antes del año indicado.
+     *
+     * @param ano Año de inauguración.
+     * @return Lista de centros comerciales inaugurados antes del año indicado.
+     */
+    public List<CentroComercial> buscarCentrosComercialesInauguradosAntesDelAno(Year ano) {
         // Construyo un string con el formato esperado
-        String fechaLimite = "01/01/" + year.toString();
-        return centroComercialRepository.findByInauguracionBefore(fechaLimite);
+        String fecha = "01/01/" + ano.toString();
+        return centroComercialRepository.findByInauguracionBefore(fecha);
     }
 
-    public List<CentroComercial> buscarCentrosComercialesInauguradosDespuesDelAno(Year year) {
+    /**
+     * Busca centros comerciales inaugurados después del año indicado.
+     *
+     * @param ano Año de inauguración.
+     * @return Lista de centros comerciales inaugurados después del año indicado.
+     */
+    public List<CentroComercial> buscarCentrosComercialesInauguradosDespuesDelAno(Year ano) {
         // Construyo un string con el formato esperado
-        String fechaLimite = "01/01/" + year.toString();
-        return centroComercialRepository.findByInauguracionAfter(fechaLimite);
+        String fecha = "01/01/" + ano.toString();
+        return centroComercialRepository.findByInauguracionAfter(fecha);
     }
 
+    /**
+     * Busca centros comerciales con menos de cierto número de plantas.
+     *
+     * @param numeroPlantas Número máximo de plantas permitido.
+     * @return Lista de centros comerciales con menos de cierto número de plantas.
+     */
     public List<CentroComercial> buscarCentrosComercialesConMenosDePlantasQue(Integer numeroPlantas) {
         return centroComercialRepository.findCentrosComercialesConMenosDePlantas(numeroPlantas);
     }
 
+    /**
+     * Crea un nuevo centro comercial.
+     *
+     * @param centroComercial Centro comercial a crear.
+     * @param token           Token de autenticación.
+     * @return ResponseEntity con el centro comercial creado o estado de error.
+     */
     //Para crear un nuevo Centro Comercial (Post)
     public ResponseEntity<CentroComercial> crearCentroComercial(CentroComercial centroComercial, String token) {
         if (securityService.tokenDeValidacion(token)) {
@@ -45,8 +74,17 @@ public class CentroComercialService {
         }
     }
 
+    /**
+     * Actualiza un centro comercial existente.
+     *
+     * @param id                ID del centro comercial a actualizar.
+     * @param nuevoCentroComercial Datos actualizados del centro comercial.
+     * @param token             Token de autenticación.
+     * @return ResponseEntity con el centro comercial actualizado o estado de error.
+     */
     //Para actualizar un Centro Comercial (Put)
-    public ResponseEntity<CentroComercial> actualizarCentroComercial(Integer id, CentroComercial nuevoCentroComercial, String token) {
+    public ResponseEntity<CentroComercial> actualizarCentroComercial(Integer id, CentroComercial nuevoCentroComercial,
+                                                                     String token) {
         if (!securityService.tokenDeValidacion(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
@@ -69,6 +107,13 @@ public class CentroComercialService {
         }
     }
 
+    /**
+     * Elimina un centro comercial por su ID.
+     *
+     * @param id    ID del centro comercial a eliminar.
+     * @param token Token de autenticación.
+     * @return ResponseEntity con el centro comercial eliminado o estado de error.
+     */
     //Para eliminar un Centro Comercial (Delete)
     public ResponseEntity<CentroComercial> eliminarCentroComercial(Integer id, String token) {
         ResponseEntity<CentroComercial> respuesta = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

@@ -11,6 +11,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+
+/**
+ * Clase que proporciona servicios relacionados con las Tiendas en un Centro Comercial.
+ */
 @Service
 public class TiendaService {
 
@@ -23,6 +27,14 @@ public class TiendaService {
     @Autowired
     private TiendaRepository tiendaRepository;
 
+    /**
+     * Crea una nueva tienda en un centro comercial específico.
+     *
+     * @param id     ID del centro comercial.
+     * @param tienda Datos de la tienda a crear.
+     * @param token  Token de autenticación.
+     * @return ResponseEntity con la tienda creada o estado de error.
+     */
     //Para añadir tiendas
     public ResponseEntity<Tienda> crearTienda(Integer id, Tienda tienda, String token) {
         if (!securityService.tokenDeValidacion(token)) {
@@ -42,6 +54,15 @@ public class TiendaService {
         return new ResponseEntity<>(nuevaTienda, HttpStatus.CREATED);
     }
 
+    /**
+     * Actualiza una tienda en un centro comercial específico.
+     *
+     * @param id        ID del centro comercial.
+     * @param tiendaid  ID de la tienda a actualizar.
+     * @param nuevaTienda Datos actualizados de la tienda.
+     * @param token     Token de autenticación.
+     * @return ResponseEntity con la tienda actualizada o estado de error.
+     */
     //Para actualizar tiendas
     public ResponseEntity<Tienda> actualizarTienda(Integer id, Integer tiendaid, Tienda nuevaTienda, String token) {
         if (!securityService.tokenDeValidacion(token)) {
@@ -70,6 +91,14 @@ public class TiendaService {
         return new ResponseEntity<>(tiendaActualizada, HttpStatus.OK);
     }
 
+    /**
+     * Elimina una tienda en un centro comercial específico.
+     *
+     * @param id       ID del centro comercial.
+     * @param tiendaid ID de la tienda a eliminar.
+     * @param token    Token de autenticación.
+     * @return ResponseEntity con el estado de la operación.
+     */
     //Para borrar tiendas
     public ResponseEntity<Void> eliminarTienda(Integer id, Integer tiendaid, String token) {
         if (!securityService.tokenDeValidacion(token)) {
