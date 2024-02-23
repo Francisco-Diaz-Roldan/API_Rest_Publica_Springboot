@@ -262,7 +262,7 @@ public class CentroComercialController {
      * @return La tienda en la planta especificada en el centro comercial correspondiente o null si no se encuentra.
      */
     @GetMapping("/centrocomercial/{id}/tienda/planta/{planta}")
-    public Tienda getTiendaByPlanta(@PathVariable Integer id, @PathVariable Integer planta) {
+    public List<Tienda> getTiendaByPlanta(@PathVariable Integer id, @PathVariable Integer planta) {
         return tiendaRepository.getTiendaByCentroIdAndPlanta(id, planta);
     }
 

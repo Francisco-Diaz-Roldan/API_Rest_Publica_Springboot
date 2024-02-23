@@ -52,7 +52,7 @@ public interface TiendaRepository extends JpaRepository<Tienda, Integer> {
      * @return Tienda correspondiente al centro comercial y al número de planta proporcionados.
      */
     @Query("SELECT t FROM Tienda t WHERE t.centroid.centroid = :centroid AND t.planta = :planta")
-    Tienda getTiendaByCentroIdAndPlanta(@Param("centroid") Integer centroid, @Param("planta") Integer planta);
+   List<Tienda> getTiendaByCentroIdAndPlanta(@Param("centroid") Integer centroid, @Param("planta") Integer planta);
 
     /**
      * Obtiene una lista de tiendas por el ID del centro comercial y el tamaño.

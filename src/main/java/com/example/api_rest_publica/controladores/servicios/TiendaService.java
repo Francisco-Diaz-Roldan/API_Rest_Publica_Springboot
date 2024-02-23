@@ -63,7 +63,6 @@ public class TiendaService {
      * @param token     Token de autenticación.
      * @return ResponseEntity con la tienda actualizada o estado de error.
      */
-    //Para actualizar tiendas
     public ResponseEntity<Tienda> actualizarTienda(Integer id, Integer tiendaid, Tienda nuevaTienda, String token) {
         if (!securityService.tokenDeValidacion(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -87,7 +86,20 @@ public class TiendaService {
         tiendaExistente.setTamano(nuevaTienda.getTamano());
         tiendaExistente.setPrecio(nuevaTienda.getPrecio());
 
+        // Comprueba que el nuevo centro comercial sea válido antes de establecerlo
+        CentroComercial nuevoCentroComercial = centroComercialOptional.get();
+        if (nuevoCentroComercial != null) {
+            tiendaExistente.setCentroid(nuevoCentroComercial);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // Guarda la tienda actualizada
         Tienda tiendaActualizada = tiendaRepository.save(tiendaExistente);
+
+        // Comprueba el estado persistente de la tienda actualizada (para propósitos de depuración)
+        System.out.println("Tienda actualizada con ID: " + tiendaActualizada.getTiendaid());
+
         return new ResponseEntity<>(tiendaActualizada, HttpStatus.OK);
     }
 
