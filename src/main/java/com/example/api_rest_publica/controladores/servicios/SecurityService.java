@@ -1,4 +1,4 @@
-package com.example.api_rest_publica.controladores.Servicio;
+package com.example.api_rest_publica.controladores.servicios;
 
 
 import org.springframework.stereotype.Service;

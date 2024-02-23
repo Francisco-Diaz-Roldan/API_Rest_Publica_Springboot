@@ -1,4 +1,4 @@
-package com.example.api_rest_publica.controladores.Servicio;
+package com.example.api_rest_publica.controladores.servicios;
 
 import com.example.api_rest_publica.modelos.CentroComercial;
 import com.example.api_rest_publica.repositorios.CentroComercialRepository;

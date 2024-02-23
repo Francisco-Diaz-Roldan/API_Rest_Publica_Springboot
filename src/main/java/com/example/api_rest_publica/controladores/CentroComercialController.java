@@ -1,8 +1,8 @@
 package com.example.api_rest_publica.controladores;
 
-import com.example.api_rest_publica.controladores.Servicio.CentroComercialService;
-import com.example.api_rest_publica.controladores.Servicio.SecurityService;
-import com.example.api_rest_publica.controladores.Servicio.TiendaService;
+import com.example.api_rest_publica.controladores.servicios.CentroComercialService;
+import com.example.api_rest_publica.controladores.servicios.SecurityService;
+import com.example.api_rest_publica.controladores.servicios.TiendaService;
 import com.example.api_rest_publica.modelos.CentroComercial;
 import com.example.api_rest_publica.modelos.Tienda;
 import com.example.api_rest_publica.repositorios.CentroComercialRepository;
