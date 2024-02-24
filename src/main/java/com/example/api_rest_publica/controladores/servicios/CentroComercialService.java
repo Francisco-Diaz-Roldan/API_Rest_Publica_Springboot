@@ -62,55 +62,6 @@ public class CentroComercialService {
     }
 
     /**
-     * Crea un nuevo centro comercial.
-     *
-     * @param centroComercial Centro comercial a crear.
-     * @param token           Token de autenticación.
-     * @return ResponseEntity con el centro comercial creado o estado de error.
-     */
-    //Para crear un nuevo Centro Comercial (Post)
-    public ResponseEntity<CentroComercial> crearCentroComercial(CentroComercial centroComercial, String token) {
-        if (securityService.tokenDeValidacion(token)) {
-            return new ResponseEntity<>(centroComercialRepository.save(centroComercial), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-    }
-
-    /**
-     * Actualiza un centro comercial existente.
-     *
-     * @param id                ID del centro comercial a actualizar.
-     * @param nuevoCentroComercial Datos actualizados del centro comercial.
-     * @param token             Token de autenticación.
-     * @return ResponseEntity con el centro comercial actualizado o estado de error.
-     */
-    //Para actualizar un Centro Comercial (Put)
-    public ResponseEntity<CentroComercial> actualizarCentroComercial(Integer id, CentroComercial nuevoCentroComercial,
-                                                                     String token) {
-        if (!securityService.tokenDeValidacion(token)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } else {
-            CentroComercial centroComercial;
-            Optional<CentroComercial> centroComercialOpcional = centroComercialRepository.findById(id);
-
-            if (centroComercialOpcional.isEmpty()) {
-                centroComercial = nuevoCentroComercial;
-            } else {
-                centroComercial = centroComercialOpcional.get();
-                centroComercial.setNombre(nuevoCentroComercial.getNombre());
-                centroComercial.setDireccion(nuevoCentroComercial.getDireccion());
-                centroComercial.setTelefono(nuevoCentroComercial.getTelefono());
-                centroComercial.setHorario(nuevoCentroComercial.getHorario());
-                centroComercial.setPlantas(nuevoCentroComercial.getPlantas());
-                centroComercial.setParking(nuevoCentroComercial.getParking());
-                centroComercial.setInauguracion(nuevoCentroComercial.getInauguracion());
-            }
-            return new ResponseEntity<>(centroComercialRepository.save(centroComercial), HttpStatus.OK);
-        }
-    }
-
-    /**
      * Elimina un centro comercial por su ID.
      *
      * @param id    ID del centro comercial a eliminar.
@@ -121,7 +72,7 @@ public class CentroComercialService {
     public ResponseEntity<CentroComercial> eliminarCentroComercial(Integer id, String token) {
         ResponseEntity<CentroComercial> respuesta = new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 
-        if (securityService.tokenDeValidacion(token)) {
+        if (securityService.validarToken(token)) {
             CentroComercial salida = new CentroComercial();
 
             if (centroComercialRepository.existsById(id)) {

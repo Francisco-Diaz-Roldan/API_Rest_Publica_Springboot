@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Year;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Controlador que maneja las operaciones relacionadas con los Centros Comerciales en la API REST.
@@ -183,10 +184,14 @@ public class CentroComercialController {
      * @return ResponseEntity con el centro comercial creado o estado de error.
      */
     //Post de Centro Comercial
-    @PostMapping
+    @PostMapping("/post")
     public ResponseEntity<CentroComercial> nuevo(@RequestBody CentroComercial centroComercial,
                                                  @RequestParam String token) {
-        return centroComercialService.crearCentroComercial(centroComercial, token);
+        if (securityService.validarToken(token)) {
+            return new ResponseEntity<CentroComercial>(centroComercialRepository.save(centroComercial), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     /**
@@ -202,16 +207,38 @@ public class CentroComercialController {
     public ResponseEntity<CentroComercial> put(@PathVariable Integer id,
                                                @RequestBody CentroComercial nuevoCentroComercial,
                                                @RequestParam String token) {
-        return centroComercialService.actualizarCentroComercial(id, nuevoCentroComercial, token);
+
+        if (!securityService.validarToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            Optional<CentroComercial> museoSelect = centroComercialRepository.findById(id);
+
+            if (museoSelect.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                CentroComercial centroComercial = museoSelect.get();
+                centroComercial.setNombre(nuevoCentroComercial.getNombre());
+                centroComercial.setDireccion(nuevoCentroComercial.getDireccion());
+                centroComercial.setHorario(nuevoCentroComercial.getHorario());
+                centroComercial.setTelefono(nuevoCentroComercial.getTelefono());
+                centroComercial.setHorario(nuevoCentroComercial.getHorario());
+                centroComercial.setPlantas(nuevoCentroComercial.getPlantas());
+                centroComercial.setParking(nuevoCentroComercial.getParking());
+                centroComercial.setInauguracion(nuevoCentroComercial.getInauguracion());
+
+                return new ResponseEntity<>(centroComercialRepository.save(centroComercial), HttpStatus.OK);
+            }
+        }
     }
 
-    /**
-     * Elimina un centro comercial por su ID.
-     *
-     * @param id    ID del centro comercial a eliminar.
-     * @param token Token de autenticación.
-     * @return ResponseEntity con el estado de la operación.
-     */
+
+        /**
+         * Elimina un centro comercial por su ID.
+         *
+         * @param id    ID del centro comercial a eliminar.
+         * @param token Token de autenticación.
+         * @return ResponseEntity con el estado de la operación.
+         */
     //Delete de Centro Comercial
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<CentroComercial> delete(@PathVariable Integer id, @RequestParam String token) {
@@ -380,7 +407,7 @@ public class CentroComercialController {
     public ResponseEntity<Void> eliminarTiendasPorCentroComercial(
             @PathVariable Integer centroid,
             @RequestParam String token) {
-        if (!securityService.tokenDeValidacion(token)) {
+        if (!securityService.validarToken(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 

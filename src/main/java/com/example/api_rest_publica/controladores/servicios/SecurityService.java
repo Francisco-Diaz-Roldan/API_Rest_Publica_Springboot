@@ -14,7 +14,7 @@ public class SecurityService {
      * @param token Token a validar.
      * @return true si el token es válido, false de lo contrario.
      */
-    public Boolean tokenDeValidacion(String token) {
+    public Boolean validarToken(String token) {
         return (token.equals("t0k3n"));
     }
 }

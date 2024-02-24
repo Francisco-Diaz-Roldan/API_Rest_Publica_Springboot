@@ -37,7 +37,7 @@ public class TiendaService {
      */
     //Para añadir tiendas
     public ResponseEntity<Tienda> crearTienda(Integer id, Tienda tienda, String token) {
-        if (!securityService.tokenDeValidacion(token)) {
+        if (!securityService.validarToken(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
@@ -64,7 +64,7 @@ public class TiendaService {
      * @return ResponseEntity con la tienda actualizada o estado de error.
      */
     public ResponseEntity<Tienda> actualizarTienda(Integer id, Integer tiendaid, Tienda nuevaTienda, String token) {
-        if (!securityService.tokenDeValidacion(token)) {
+        if (!securityService.validarToken(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
@@ -113,7 +113,7 @@ public class TiendaService {
      */
     //Para borrar tiendas
     public ResponseEntity<Void> eliminarTienda(Integer id, Integer tiendaid, String token) {
-        if (!securityService.tokenDeValidacion(token)) {
+        if (!securityService.validarToken(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
